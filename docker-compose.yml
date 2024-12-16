@@ -1,0 +1,66 @@
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5100:5000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - node-server
+    stdin_open: true
+    tty: true
+    networks:
+      - app-network
+
+  node-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mariadb
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  mariadb:
+    image: mariadb:10.9
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: mydatabase
+      MARIADB_USER: ask
+      MARIADB_PASSWORD: ask
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
