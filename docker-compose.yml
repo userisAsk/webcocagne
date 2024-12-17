@@ -2,9 +2,9 @@ services:
   react-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.frontend
     ports:
-      - "5100:5000"
+      - "5100:3000"
     volumes:
       - .:/app
       - /app/node_modules
@@ -17,8 +17,8 @@ services:
 
   node-server:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: . 
+      dockerfile: ./server/Dockerfile.backend
     ports:
       - "5000:5000"
     depends_on:

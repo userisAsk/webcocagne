@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [databases, setDatabases] = useState([]); // État pour stocker les bases de données
+
+  useEffect(() => {
+    // Appel à l'API backend pour récupérer les bases de données
+    axios.get('http://localhost:5000/test-db')
+      .then((response) => {
+        setDatabases(response.data); // Mettre les données dans l'état
+      })
+      .catch((error) => {
+        console.error('Erreur lors de la récupération des bases :', error);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Liste des Bases de Données</h1>
+      <ul>
+        {databases.map((db, index) => (
+          <li key={index}>{db.Database}</li> // Affiche le nom de chaque base
+        ))}
+      </ul>
     </div>
   );
 }

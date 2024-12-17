@@ -1,0 +1,17 @@
+FROM node:18
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Copier package.json et package-lock.json pour installer les dépendances
+COPY server/package*.json ./
+RUN npm install
+
+# Copier le reste du code source du serveur
+COPY server/ .
+
+# Exposer le port utilisé par votre serveur Node.js
+EXPOSE 5000
+
+# Commande pour démarrer le serveur
+CMD ["node", "server.js"]
